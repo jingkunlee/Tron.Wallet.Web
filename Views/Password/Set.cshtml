@@ -1,0 +1,62 @@
+﻿@{
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>设置钱包密码</title>
+    <link rel="stylesheet" href="/lib/bootstrap-5.3.0/css/bootstrap.min.css" />
+</head>
+<body data-bs-theme="dark">
+    <div class="modal fade" id="setWalletPasswordModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">设置钱包密码</h1>
+                </div>
+                <div class="modal-body">
+                    <form onsubmit="return false;">
+                        <div class="mb-3">
+                            <label for="password" class="form-label">钱包密码</label>
+                            <input type="password" class="form-control" id="password" autocomplete="off" style="color:#000;" />
+                        </div>
+                        <div class="mb-3" style="margin-bottom:0 !important;">
+                            <label for="password" class="form-label">确认密码</label>
+                            <input type="password" class="form-control" id="confirmPassword" autocomplete="off" style="color:#000;" />
+                        </div>
+                        <div class="alert alert-danger" role="alert" style="margin-top:1rem; margin-bottom:0 !important;display:none;"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/bootstrap-5.3.0/js/bootstrap.min.js"></script>
+    <script>
+        $(function () {
+            const setPasswordModal = new bootstrap.Modal('#setWalletPasswordModal', { backdrop: 'static', focus: true, keyboard: false });
+            setPasswordModal.show();
+
+            $('#password,#confirmPassword').keydown(function (e) {
+                if (e.keyCode !== 13) return true;
+
+                $('.alert-danger').hide();
+                var password = $.trim($('#password').val());
+                var confirmPassword = $.trim($('#confirmPassword').val());
+
+                $.post('/Password/Set', { password: password, confirmPassword: confirmPassword }, function (result) {
+                    if (result.status !== 2) {
+                        $('.alert-danger').show().text(result.message);
+                    }
+                    else {
+                        location.href = '/';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

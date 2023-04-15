@@ -1,0 +1,103 @@
+﻿@model ViewModel
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>地址</th>
+            <th>TRX</th>
+            <th>USDT</th>
+            <th>激活时间</th>
+            <th>备注</th>
+            <th></th>
+            <th style="padding-top:4.75px;padding-bottom:4.75px;text-align:right;">
+                <button type="button" class="btn btn-success btn-sm btn-refresh">刷新资产余额</button>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Wallets != null && Model.Wallets.Count > 0) {
+            foreach (var wallet in Model.Wallets.OrderByDescending(x => x.EtherBalance)) {
+                <tr data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)" data-address="@(wallet.Address)">
+                    <td>@(wallet.AccountId.ToString("000")) -  @(wallet.WalletId.ToString("000"))</td>
+                    <td><a href="https://tronscan.io/#/address/@(wallet.Address)" target="_blank" class="text-decoration-none font-monospace">@(wallet.Address)</a></td>
+                    <td>@(wallet.TrxBalance.ToString("0.######"))</td>
+                    <td>@(wallet.EtherBalance.ToString("0.######"))</td>
+                    <td>@(wallet.CreateTimestamp > 0 ? DateTimeExtensions.GetDatetimeFromTimestamp(wallet.CreateTimestamp).ToString("yyyy-MM-dd HH:mm:ss") : "--")</td>
+                    <td>@(wallet.Memo)</td>
+                    <td style="text-align:right;">
+                        <a href="javascript:;" class="text-decoration-none" style="margin-right:1rem;" data-bs-toggle="modal" data-bs-target="#transferOutModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)" data-address="@(wallet.Address)" data-token="@((sbyte)Token.Trx)" data-trx="@(wallet.TrxBalance)" data-ether="@(wallet.EtherBalance)">转出 TRX</a>
+                        <a href="javascript:;" class="text-decoration-none" style="margin-right:1rem;" data-bs-toggle="modal" data-bs-target="#transferOutModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)" data-address="@(wallet.Address)" data-token="@((sbyte)Token.Ether)" data-trx="@(wallet.TrxBalance)" data-ether="@(wallet.EtherBalance)">转出 USDT</a>
+                        <a href="javascript:;" class="text-decoration-none" style="margin-right:1rem;" data-bs-toggle="modal" data-bs-target="#viewPrivateKeyModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)">查看私钥</a>
+                        <a href="javascript:;" class="text-decoration-none text-danger" data-bs-toggle="modal" data-bs-target="#removeModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)" data-address="@(wallet.Address)">移除</a>
+                    </td>
+                    <td style="text-align:right;">@(wallet.UpdateTimestamp > 0 ? DateTimeExtensions.GetDatetimeFromTimestamp(wallet.UpdateTimestamp).ToString("yyyy-MM-dd HH:mm:ss") : "--")</td>
+                </tr>
+            }
+            <tr>
+                <th colspan="2" style="text-align:right">合计</th>
+                <th>@(Model.Wallets.Sum(x => x.TrxBalance).ToString("0.######"))</th>
+                <th>@(Model.Wallets.Sum(x => x.EtherBalance).ToString("0.######"))</th>
+                <th colspan="4"></th>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="modal fade" id="removeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">从已激活列表移除</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="return false;">
+                    <input type="hidden" name="AccountId" />
+                    <input type="hidden" name="WalletId" />
+                    <div class="mb-3" style="margin-bottom:0 !important;">
+                        <label class="form-label">地址</label>
+                        <input type="text" class="form-control" name="Address" readonly />
+                    </div>
+                    <div class="alert alert-danger" role="alert" style="margin-top:1rem;margin-bottom:0 !important;display:none;"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger">移除</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+            $("#removeModal").on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var accountId = button.data('account-id');
+                var walletId = button.data('wallet-id');
+                var address = button.data('address');
+
+                var modal = $(this);
+                modal.find('.modal-body input[name="AccountId"]').val(accountId);
+                modal.find('.modal-body input[name="WalletId"]').val(walletId);
+                modal.find('.modal-body input[name="Address"]').val(address);
+            }).on('click', '.btn-danger', function (e) {
+                var self = $(this).text('请稍后..').attr('disabled', 'disabled');
+
+                var modalBody = $(this).parent().prev();
+                modalBody.find('.alert-danger').hide();
+
+                var accountId = modalBody.find('input[name="AccountId"]').val();
+                var walletId = modalBody.find('input[name="WalletId"]').val();
+                $.post('/Wallet/RemoveByAccountIdByWalletId', { accountId: accountId, walletId: walletId }, function (result) {
+                    if (result.status === 2) {
+                        location.reload();
+                    }
+                    else {
+                        modalBody.find('.alert-danger').show().text(result.message);
+                        self.text('移除').removeAttr('disabled');
+                    }
+                });
+            });
+        });
+    </script>
+}

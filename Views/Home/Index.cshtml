@@ -1,0 +1,130 @@
+﻿@model ViewModel
+<div style="margin:12px;">
+    <div class="row">
+        <div class="col-9">
+            <div class="card">
+                <table class="table table-hover" style="margin-bottom:0;">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>地址</th>
+                            <th>TRX</th>
+                            <th>USDT</th>
+                            <th>激活时间</th>
+                            <th>备注</th>
+                            <th></th>
+                            <th style="padding-top:4.75px;padding-bottom:4.75px;text-align:right;">
+                                <button type="button" class="btn btn-success btn-sm btn-refresh">刷新资产余额</button>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.PrivateKeyWallets != null && Model.PrivateKeyWallets.Count > 0) {
+                            foreach (var wallet in Model.PrivateKeyWallets) {
+                                <tr data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)" data-address="@(wallet.Address)">
+                                    <td>@(wallet.WalletId.ToString("000"))</td>
+                                    <td><a href="https://tronscan.io/#/address/@(wallet.Address)" target="_blank" class="text-decoration-none font-monospace">@(wallet.Address)</a></td>
+                                    <td>@(wallet.TrxBalance.ToString("0.######"))</td>
+                                    <td>@(wallet.EtherBalance.ToString("0.######"))</td>
+                                    <td>@(wallet.CreateTimestamp > 0 ? DateTimeExtensions.GetDatetimeFromTimestamp(wallet.CreateTimestamp).ToString("yyyy-MM-dd HH:mm:ss") : "--")</td>
+                                    <td>@(wallet.Memo)</td>
+                                    <td style="text-align:right;">
+                                        <a href="javascript:;" class="text-decoration-none" style="margin-right:1rem;" data-bs-toggle="modal" data-bs-target="#transferOutModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)" data-address="@(wallet.Address)" data-token="@((sbyte)Token.Trx)" data-trx="@(wallet.TrxBalance)" data-ether="@(wallet.EtherBalance)">转出 TRX</a>
+                                        <a href="javascript:;" class="text-decoration-none" style="margin-right:1rem;" data-bs-toggle="modal" data-bs-target="#transferOutModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)" data-address="@(wallet.Address)" data-token="@((sbyte)Token.Ether)" data-trx="@(wallet.TrxBalance)" data-ether="@(wallet.EtherBalance)">转出 USDT</a>
+                                        <a href="javascript:;" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#viewPrivateKeyModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)">查看私钥</a>
+                                    </td>
+                                    <td style="text-align:right;">@(wallet.UpdateTimestamp > 0 ? DateTimeExtensions.GetDatetimeFromTimestamp(wallet.UpdateTimestamp).ToString("yyyy-MM-dd HH:mm:ss") : "--")</td>
+                                </tr>
+                            }
+                            <tr>
+                                <th colspan="2" style="text-align:right">当前页合计</th>
+                                <th>@(Model.PrivateKeyWallets.Sum(x => x.TrxBalance).ToString("0.######"))</th>
+                                <th>@(Model.PrivateKeyWallets.Sum(x => x.EtherBalance).ToString("0.######"))</th>
+                                <th colspan="4"></th>
+                            </tr>
+                        }
+                    </tbody>
+                    @(Html.Raw(Paging.Render(Model.PageIndex, Model.PageSize, Model.RecordCount, Model.Url)))
+                </table>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="card-title" style="margin-bottom:0;line-height:31px;">钱包</h5>
+                        </div>
+                        <div class="col" style="text-align:right;">
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#importWalletModal">导入</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="list-group list-group-flush">
+                    <input type="hidden" id="AccountId" value="@(Model.AccountId)" />
+                    <a href="/" class="list-group-item list-group-item-action">000（私钥）</a>
+                    @if (Model.MnemonicWallets != null && Model.MnemonicWallets.Count > 0) {
+                        for (var i = 0; i < Model.MnemonicWallets.Count; i++) {
+                            <a href="/?accountId=@(i+1)" class="list-group-item list-group-item-action">@((i + 1).ToString("000"))（助记词）</a>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="importWalletModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">导入</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="return false;">
+                    <div class="mb-3">
+                        <label class="form-label">助记词/私钥</label>
+                        <textarea class="form-control" rows="2" placeholder="不填写可生成随机私钥"></textarea>
+                    </div>
+                    <div class="mb-3" style="margin-bottom:0 !important;">
+                        <label class="form-label">备注</label>
+                        <input type="text" class="form-control" name="Memo" />
+                    </div>
+                    <div class="alert alert-danger" role="alert" style="margin-top:1rem;margin-bottom:0 !important;display:none;"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(function () {
+            //accounts
+            var accountId = parseInt($("#AccountId").val());
+            $(".list-group-item").eq(accountId).addClass('active');
+
+            $("#importWalletModal").on('keydown', 'textarea,input', function (e) {
+                if (e.keyCode !== 13) return true;
+
+                var self = $(this);
+                var modalBody = $(this).parent().parent();
+                modalBody.find('.alert-danger').hide();
+
+                var mnemonicOrPrivateKey = $.trim(modalBody.find('textarea:first').val());
+                var memo = $.trim(modalBody.find('input[name="Memo"]').val());
+                $.post('/Wallet/Import', { mnemonicOrPrivateKey: mnemonicOrPrivateKey, memo: memo }, function (result) {
+                    if (result.status !== 2) {
+                        modalBody.find('.alert-danger').show().text(result.message);
+                    }
+                    else {
+                        location.reload();
+                    }
+                });
+
+                return false;
+            });
+        });
+    </script>
+}

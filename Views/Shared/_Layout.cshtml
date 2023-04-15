@@ -1,0 +1,126 @@
+﻿@model ViewModel
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>钱包</title>
+    <link rel="stylesheet" href="/lib/bootstrap-5.3.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/site.css" />
+</head>
+<body data-bs-theme="dark">
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">钱包</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">首页</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Wallet/List">已激活列表</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    @RenderBody()
+    <div class="modal fade" id="viewPrivateKeyModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">查看私钥</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form onsubmit="return false;">
+                        <input type="hidden" name="AccountId" />
+                        <input type="hidden" name="WalletId" />
+                        <div class="mb-3 step2" style="display:none;">
+                            <label class="form-label">私钥</label>
+                            <textarea class="form-control" rows="2" name="PrivateKey" readonly></textarea>
+                        </div>
+                        <div class="mb-3 step2" style="display:none;margin-bottom:0 !important;">
+                            <label class="form-label">地址</label>
+                            <input type="text" class="form-control" name="Address" readonly />
+                        </div>
+                        <div class="mb-3 step1" style="margin-bottom:0 !important;">
+                            <label class="form-label">钱包密码</label>
+                            <input type="password" class="form-control" name="Password" autocomplete="off" />
+                        </div>
+                        <div class="alert alert-danger" role="alert" style="margin-top:1rem;margin-bottom:0 !important;display:none;"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="transferOutModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="transferOutModalLabel">转出</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form onsubmit="return false;">
+                        <input type="hidden" name="AccountId" />
+                        <input type="hidden" name="WalletId" />
+                        <div class="mb-3">
+                            <label class="form-label">转出地址</label>
+                            <input type="text" class="form-control" name="FromAddress" readonly="readonly" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">代币类型</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="Token" value="1" disabled>
+                                <label class="form-check-label">TRX</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="Token" value="2" disabled>
+                                <label class="form-check-label">USDT</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">目的地址</label>
+                            <input type="text" class="form-control" name="ToAddress" autocomplete="off" />
+                            <select class="form-select mb-3 sel-adress" style="margin-top:.5rem;">
+                                <option value="" selected>--选择目的地址--</option>
+                                @if (Model.Wallets != null && Model.Wallets.Count > 0) {
+                                    foreach (var wallet in Model.Wallets) {
+                                        <option class="font-monospace" value="@(wallet.Address)">[@(wallet.Address)][@(wallet.TrxBalance.ToString("0.######")) TRX | @(wallet.EtherBalance.ToString("0.######")) USDT] @(wallet.Memo)</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">转出金额</label>
+                            <input type="text" class="form-control" name="Amount" placeholder="0.00" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">备注</label>
+                            <input type="text" class="form-control" name="Memo" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">钱包密码</label>
+                            <input type="password" class="form-control" name="Password" autocomplete="off" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/bootstrap-5.3.0/js/bootstrap.min.js"></script>
+    <script src="/js/site.js"></script>
+    @await RenderSectionAsync("scripts",false)
+</body>
+</html>
