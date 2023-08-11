@@ -109,7 +109,9 @@
         modal.find('.modal-body input[name="Memo"]').val('');
         modal.find('.modal-body input[name="Password"]').val('');
     }).on('keydown', 'input[name="Password"]', function (e) {
-        if (e.keyCode === 13) { }
+        if (e.keyCode === 13) {
+            $(this).parent().parent().parent().next().find('.btn-primary').click();
+        }
     }).on('click', '.btn-primary', function () {
         var button = $(this);
         button.attr('disabled', 'disabled').text('请稍后..');
