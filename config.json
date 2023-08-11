@@ -1,7 +1,7 @@
 {
-  "Password": "d89050d1745d3c03b43b341ba71cb56f",
-  "OwnerAddress": "TMUgJVQiYyjNcPZ3WNY6JStqU83WRSpewW",
-  "ReceiveAddress": "TMUgJVQiYyjNcPZ3WNY6JStqU83WRSpewW",
+  "Password": "",
+  "OwnerAddress": "未设置",
+  "ReceiveAddress": "未设置",
   "MnemonicWallets": null,
   "PrivateKeyWallets": [
     {
