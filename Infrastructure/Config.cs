@@ -5,6 +5,10 @@
     public class Config {
         public string? Password { get; set; }
 
+        public string? OwnerAddress { get; set; }
+
+        public string? ReceiveAddress { get; set; }
+
         public IList<MnemonicWallet>? MnemonicWallets { get; set; }
 
         public IList<PrivateKeyWallet>? PrivateKeyWallets { get; set; }
