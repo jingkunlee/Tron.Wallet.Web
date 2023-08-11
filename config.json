@@ -1,0 +1,13 @@
+{
+  "Password": "d89050d1745d3c03b43b341ba71cb56f",
+  "OwnerAddress": "TMUgJVQiYyjNcPZ3WNY6JStqU83WRSpewW",
+  "ReceiveAddress": "TMUgJVQiYyjNcPZ3WNY6JStqU83WRSpewW",
+  "MnemonicWallets": null,
+  "PrivateKeyWallets": [
+    {
+      "PrivateKey": "ikH8yp%2f2oK5k44Jhlxfkj23+79Q4dTGr4l47KBvyg7rrQUUSsSvGftczIztecsrIyU6tIhDEZVD9ttg%2fV8flfvqGM7abT0w4",
+      "Memo": null
+    }
+  ],
+  "Wallets": null
+}
