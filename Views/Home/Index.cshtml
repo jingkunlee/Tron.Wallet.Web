@@ -1,7 +1,7 @@
 ﻿@model ViewModel
 <div style="margin:12px;">
     <div class="row">
-        <div class="col-9">
+        <div class="col-10">
             <div class="card">
                 <table class="table table-hover" style="margin-bottom:0;">
                     <thead>
@@ -12,8 +12,7 @@
                             <th>USDT</th>
                             <th>激活时间</th>
                             <th>备注</th>
-                            <th></th>
-                            <th style="padding-top:4.75px;padding-bottom:4.75px;text-align:right;">
+                            <th colspan="2" style="padding-top:4.75px;padding-bottom:4.75px;text-align:right;">
                                 <button type="button" class="btn btn-success btn-sm btn-refresh">刷新资产余额</button>
                             </th>
                         </tr>
@@ -26,14 +25,14 @@
                                     <td><a href="https://tronscan.io/#/address/@(wallet.Address)" target="_blank" class="text-decoration-none font-monospace">@(wallet.Address)</a></td>
                                     <td>@(wallet.TrxBalance.ToString("0.######"))</td>
                                     <td>@(wallet.EtherBalance.ToString("0.######"))</td>
-                                    <td>@(wallet.CreateTimestamp > 0 ? DateTimeExtensions.GetDatetimeFromTimestamp(wallet.CreateTimestamp).ToString("yyyy-MM-dd HH:mm:ss") : "--")</td>
+                                    <td>@(wallet.CreateTimestamp > 0 ? DateTimeExtensions.GetDatetimeFromTimestamp(wallet.CreateTimestamp).ToString("MM-dd HH:mm") : "--")</td>
                                     <td>@(wallet.Memo)</td>
                                     <td style="text-align:right;">
                                         <a href="javascript:;" class="text-decoration-none" style="margin-right:1rem;" data-bs-toggle="modal" data-bs-target="#transferOutModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)" data-address="@(wallet.Address)" data-token="@((sbyte)Token.Trx)" data-trx="@(wallet.TrxBalance)" data-ether="@(wallet.EtherBalance)">转出 TRX</a>
                                         <a href="javascript:;" class="text-decoration-none" style="margin-right:1rem;" data-bs-toggle="modal" data-bs-target="#transferOutModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)" data-address="@(wallet.Address)" data-token="@((sbyte)Token.Ether)" data-trx="@(wallet.TrxBalance)" data-ether="@(wallet.EtherBalance)">转出 USDT</a>
-                                        <a href="javascript:;" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#viewPrivateKeyModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)">查看私钥</a>
+                                        <a href="javascript:;" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#viewPrivateKeyModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)">私钥</a>
                                     </td>
-                                    <td style="text-align:right;">@(wallet.UpdateTimestamp > 0 ? DateTimeExtensions.GetDatetimeFromTimestamp(wallet.UpdateTimestamp).ToString("yyyy-MM-dd HH:mm:ss") : "--")</td>
+                                    <td style="text-align:right;">@(wallet.UpdateTimestamp > 0 ? DateTimeExtensions.GetDatetimeFromTimestamp(wallet.UpdateTimestamp).ToString("HH:mm:ss") : "--")</td>
                                 </tr>
                             }
                             <tr>
@@ -48,7 +47,7 @@
                 </table>
             </div>
         </div>
-        <div class="col-3">
+        <div class="col-2">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
