@@ -13,7 +13,7 @@ namespace Tron.Wallet.Web.Controllers {
 
         [HttpGet]
         public IActionResult List() {
-            var viewModel = new ViewModel { Wallets = Config.Wallets };
+            var viewModel = new ListViewModel { OwnerAddress = Config.OwnerAddress, ReceiveAddress = Config.ReceiveAddress, Wallets = Config.Wallets };
 
             return View(viewModel);
         }
@@ -175,8 +175,8 @@ namespace Tron.Wallet.Web.Controllers {
                 Status = (sbyte)ResponseStatus.Success,
                 TrxBalance = wallet.TrxBalance.ToString("0.######"),
                 EtherBalance = wallet.EtherBalance.ToString("0.######"),
-                CreateTime = wallet.CreateTimestamp == 0 ? "--" : DateTimeExtensions.GetDatetimeFromTimestamp(wallet.CreateTimestamp).ToString("yyyy-MM-dd HH:mm:ss"),
-                UpdateTime = DateTimeExtensions.GetDatetimeFromTimestamp(wallet.UpdateTimestamp).ToString("yyyy-MM-dd HH:mm:ss"),
+                CreateTime = wallet.CreateTimestamp == 0 ? "--" : DateTimeExtensions.GetDatetimeFromTimestamp(wallet.CreateTimestamp).ToString("MM-dd HH:mm"),
+                UpdateTime = DateTimeExtensions.GetDatetimeFromTimestamp(wallet.UpdateTimestamp).ToString("HH:mm:ss"),
             };
 
             return Json(result);
@@ -262,6 +262,50 @@ namespace Tron.Wallet.Web.Controllers {
                 }
 
                 return Json(new { Status = ResponseStatus.Success, TransactionId = transactionId });
+
+            } catch (Exception exception) {
+                saveResponse.Status = ResponseStatus.Exception;
+                saveResponse.Message = exception.Message;
+            }
+
+            return Json(saveResponse);
+        }
+
+        #endregion
+
+        #region AccountPermissionUpdateAsync
+
+        private static async Task<dynamic> AccountPermissionUpdateAsync(string privateKey, string toAddress) {
+            var record = TronServiceExtension.GetRecord();
+            var transactionClient = record.TronClient?.GetTransaction();
+            var account = new TronAccount(privateKey, TronNetwork.MainNet);
+
+            var transactionExtention = await transactionClient?.CreateAccountPermissionUpdateTransactionAsync(account.Address, toAddress)!;
+
+            var transactionSigned = transactionClient.GetTransactionSign(transactionExtention.Transaction, privateKey);
+            var returnObj = await transactionClient.BroadcastTransactionAsync(transactionSigned);
+
+            return new { Result = returnObj.Result, Message = returnObj.Message, TransactionId = transactionExtention.Transaction.GetTxid() };
+        }
+
+        #endregion
+
+        #region Authorize
+
+        [HttpPost]
+        public ActionResult Authorize(int accountId, int walletId, string ownerAddress, string password) {
+            var saveResponse = new SaveResponse();
+
+            try {
+                var wallet = GetWalletByAccountIdByWalletId(accountId, walletId);
+                if (wallet == null) throw new Exception("钱包不存在..");
+
+                if (string.IsNullOrEmpty(password)) throw new Exception("请输入钱包密码..");
+                var encryptedPassword = HashProvider.MD5Encrypt($"{HashProvider.MD5Encrypt($"{password}//--")}//--");
+                if (encryptedPassword != Config.Password) throw new Exception("钱包密码不正确..");
+
+                var result = AccountPermissionUpdateAsync(wallet.PrivateKey, ownerAddress).Result;
+                return Json(new { Status = ResponseStatus.Success, TransactionId = result.TransactionId });
 
             } catch (Exception exception) {
                 saveResponse.Status = ResponseStatus.Exception;

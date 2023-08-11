@@ -12,7 +12,16 @@ namespace Tron.Wallet.Web.Controllers {
         public IActionResult Index(int accountId = 0, int p = 1, int pageSize = 15) {
             if (Config == null || string.IsNullOrEmpty(Config.Password)) return View("~/Views/Password/Set.cshtml");
 
-            var viewModel = new ViewModel { AccountId = accountId, MnemonicWallets = Config.MnemonicWallets ?? new List<MnemonicWallet>(), Wallets = Config.Wallets, Url = Request.SetParameter("p", "{0}"), PageIndex = p, PageSize = pageSize };
+            var viewModel = new ViewModel {
+                AccountId = accountId,
+                OwnerAddress = Config.OwnerAddress,
+                ReceiveAddress = Config.ReceiveAddress,
+                MnemonicWallets = Config.MnemonicWallets ?? new List<MnemonicWallet>(),
+                Wallets = Config.Wallets,
+                Url = Request.SetParameter("p", "{0}"),
+                PageIndex = p,
+                PageSize = pageSize
+            };
 
             var start = (viewModel.PageIndex - 1) * viewModel.PageSize;
             var stop = viewModel.PageIndex * viewModel.PageSize - 1;
