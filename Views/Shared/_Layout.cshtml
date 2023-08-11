@@ -1,4 +1,4 @@
-﻿@model ViewModel
+﻿@model BaseViewModel
 <!doctype html>
 <html lang="zh-cn">
 <head>
@@ -91,6 +91,8 @@
                             <select class="form-select mb-3 sel-adress" style="margin-top:.5rem;">
                                 <option value="" selected>--选择目的地址--</option>
                                 @if (Model.Wallets != null && Model.Wallets.Count > 0) {
+                                    <option class="font-monospace" value="@(Model.OwnerAddress)">@(Model.OwnerAddress) OwnerAddress</option>
+                                    <option class="font-monospace" value="@(Model.ReceiveAddress)">@(Model.ReceiveAddress) ReceiveAddress</option>
                                     foreach (var wallet in Model.Wallets) {
                                         <option class="font-monospace" value="@(wallet.Address)">[@(wallet.Address)][@(wallet.TrxBalance.ToString("0.######")) TRX | @(wallet.EtherBalance.ToString("0.######")) USDT] @(wallet.Memo)</option>
                                     }
