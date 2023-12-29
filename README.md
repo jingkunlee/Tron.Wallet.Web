@@ -14,3 +14,9 @@
 ```
 127.0.0.1    tron.wallet.com
 ```
+
+部署说明：
+VS 2022 可以直接 F5 启动运行；
+如果需要部署 IIS ，需要确保服务器安装 [【ASP.NET Core Runtime 6.0.25 Host Binding】](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-aspnetcore-6.0.25-windows-hosting-bundle-installer)
+通过 VS　发布，目录需要添加　IIS_USER 和 Everyone 权限，应用程序池设置【无代码托管】；
+可以搜索 IIS  如何部署  .NET　CORE 教程；
