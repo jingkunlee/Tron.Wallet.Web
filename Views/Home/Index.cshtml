@@ -28,6 +28,7 @@
                                     <td>@(wallet.CreateTimestamp > 0 ? DateTimeExtensions.GetDatetimeFromTimestamp(wallet.CreateTimestamp).ToString("MM-dd HH:mm") : "--")</td>
                                     <td>@(wallet.Memo)</td>
                                     <td style="text-align:right;">
+                                        <a href="javascript:;" class="text-decoration-none" style="margin-right:1rem;" data-bs-toggle="modal" data-bs-target="#authorizeModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)" data-address="@(wallet.Address)">设置多签</a>
                                         <a href="javascript:;" class="text-decoration-none" style="margin-right:1rem;" data-bs-toggle="modal" data-bs-target="#transferOutModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)" data-address="@(wallet.Address)" data-token="@((sbyte)Token.Trx)" data-trx="@(wallet.TrxBalance)" data-ether="@(wallet.EtherBalance)">转出 TRX</a>
                                         <a href="javascript:;" class="text-decoration-none" style="margin-right:1rem;" data-bs-toggle="modal" data-bs-target="#transferOutModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)" data-address="@(wallet.Address)" data-token="@((sbyte)Token.Ether)" data-trx="@(wallet.TrxBalance)" data-ether="@(wallet.EtherBalance)">转出 USDT</a>
                                         <a href="javascript:;" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#viewPrivateKeyModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)">私钥</a>
@@ -77,7 +78,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5">导入</h1>
+                <h1 class="modal-title fs-5">导入（回车确认）</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

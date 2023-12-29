@@ -80,6 +80,45 @@
         self.prev().val(self.val());
     });
 
+    $("#authorizeModal").on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var accountId = button.data('account-id');
+        var walletId = button.data('wallet-id');
+        var address = button.data('address');
+
+        var modal = $(this);
+        modal.find('.modal-body input[name="AccountId"]').val(accountId);
+        modal.find('.modal-body input[name="WalletId"]').val(walletId);
+        modal.find('.modal-body input[name="Address"]').val(address);
+    }).on('keydown', 'input[name="Password"]', function (e) {
+        if (e.keyCode === 13) {
+            $(this).parent().parent().parent().next().find('.btn-danger').click();
+        }
+    }).on('click', '.btn-danger', function (e) {
+        var self = $(this).text('请稍后..').attr('disabled', 'disabled');
+
+        var modalBody = $(this).parent().prev();
+        modalBody.find('.alert-danger').hide();
+
+        var accountId = modalBody.find('input[name="AccountId"]').val();
+        var walletId = modalBody.find('input[name="WalletId"]').val();
+        var ownerAddress = modalBody.find('input[name="OwnerAddress"]').val();
+        var password = modalBody.find('input[name="Password"]').val();
+        $.post('/Wallet/Authorize', { accountId: accountId, walletId: walletId, ownerAddress: ownerAddress, password: password }, function (result) {
+            if (result.status === 2) {
+                modalBody.append('<div class="alert alert-success" role="alert" style="margin-bottom:0 !important;"><a href="https://tronscan.io/#/transaction/' + result.transactionId + '" target="_blank">' + result.transactionId + '</a></div>');
+                self.text('提交成功');
+
+                setTimeout(function () {
+                    location.reload();
+                }, 10000);
+            } else {
+                modalBody.append('<div class="alert alert-danger" role="alert" style="margin-bottom:0 !important;">' + result.message + '</div>');
+                self.removeAttr('disabled').text('确定');
+            }
+        });
+    });
+
     $('#transferOutModal').on('show.bs.modal', function (event) {
         var modal = $(this);
         modal.find('.modal-body .alert-danger,.modal-body .alert-success').remove();

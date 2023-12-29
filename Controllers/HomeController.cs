@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Tron.Wallet.Web.Controllers {
     using HDWallet.Core;
     using HDWallet.Tron;
-    using Tron.Wallet.Net;
+    using Tron.Wallet;
     using ViewModels;
 
     public class HomeController : BaseController {

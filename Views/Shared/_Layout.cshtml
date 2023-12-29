@@ -30,11 +30,44 @@
         </nav>
     </header>
     @RenderBody()
+    <div class="modal fade" id="authorizeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">设置多签</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form onsubmit="return false;">
+                        <input type="hidden" name="AccountId" />
+                        <input type="hidden" name="WalletId" />
+                        <div class="mb-3">
+                            <label class="form-label">地址</label>
+                            <input type="text" class="form-control" name="Address" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">控制（授权）地址</label>
+                            <input type="text" class="form-control" name="OwnerAddress" value="@(Model.OwnerAddress)" />
+                        </div>
+                        <div class="mb-3" style="margin-bottom:0 !important;">
+                            <label class="form-label">钱包密码</label>
+                            <input type="password" class="form-control" name="Password" autocomplete="off" />
+                        </div>
+                        <div class="alert alert-danger" role="alert" style="margin-top:1rem;margin-bottom:0 !important;display:none;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-danger">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="viewPrivateKeyModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5">查看私钥</h1>
+                    <h1 class="modal-title fs-5">查看私钥（回车确认）</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

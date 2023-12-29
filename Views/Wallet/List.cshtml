@@ -25,7 +25,6 @@
                     <td>@(wallet.Memo)</td>
                     <td style="text-align:right;">
                         <a href="javascript:;" class="text-decoration-none" style="margin-right:1rem;" data-bs-toggle="modal" data-bs-target="#authorizeModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)" data-address="@(wallet.Address)">设置多签</a>
-                        <a href="javascript:;" class="text-decoration-none" style="margin-right:1rem;" data-bs-toggle="modal" data-bs-target="#emptyModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)">清空资产</a>
                         <a href="javascript:;" class="text-decoration-none" style="margin-right:1rem;" data-bs-toggle="modal" data-bs-target="#transferOutModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)" data-address="@(wallet.Address)" data-token="@((sbyte)Token.Trx)" data-trx="@(wallet.TrxBalance)" data-ether="@(wallet.EtherBalance)">转出 TRX</a>
                         <a href="javascript:;" class="text-decoration-none" style="margin-right:1rem;" data-bs-toggle="modal" data-bs-target="#transferOutModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)" data-address="@(wallet.Address)" data-token="@((sbyte)Token.Ether)" data-trx="@(wallet.TrxBalance)" data-ether="@(wallet.EtherBalance)">转出 USDT</a>
                         <a href="javascript:;" class="text-decoration-none" style="margin-right:1rem;" data-bs-toggle="modal" data-bs-target="#viewPrivateKeyModal" data-account-id="@(wallet.AccountId)" data-wallet-id="@(wallet.WalletId)">私钥</a>
@@ -43,39 +42,7 @@
         }
     </tbody>
 </table>
-<div class="modal fade" id="authorizeModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5">设置多签</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form onsubmit="return false;">
-                    <input type="hidden" name="AccountId" />
-                    <input type="hidden" name="WalletId" />
-                    <div class="mb-3" style="margin-bottom:0 !important;">
-                        <label class="form-label">地址</label>
-                        <input type="text" class="form-control" name="Address" readonly />
-                    </div>
-                    <div class="mb-3" style="margin-bottom:0 !important;">
-                        <label class="form-label">控制（授权）地址</label>
-                        <input type="text" class="form-control" name="OwnerAddress" value="@(Model.OwnerAddress)" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">钱包密码</label>
-                        <input type="password" class="form-control" name="Password" autocomplete="off" />
-                    </div>
-                    <div class="alert alert-danger" role="alert" style="margin-top:1rem;margin-bottom:0 !important;display:none;"></div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-danger">确定</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 <div class="modal fade" id="removeModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -129,45 +96,6 @@
                     else {
                         modalBody.find('.alert-danger').show().text(result.message);
                         self.text('移除').removeAttr('disabled');
-                    }
-                });
-            });
-
-            $("#authorizeModal").on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget);
-                var accountId = button.data('account-id');
-                var walletId = button.data('wallet-id');
-                var address = button.data('address');
-
-                var modal = $(this);
-                modal.find('.modal-body input[name="AccountId"]').val(accountId);
-                modal.find('.modal-body input[name="WalletId"]').val(walletId);
-                modal.find('.modal-body input[name="Address"]').val(address);
-            }).on('keydown', 'input[name="Password"]', function (e) {
-                if (e.keyCode === 13) {
-                    $(this).parent().parent().parent().next().find('.btn-danger').click();
-                }
-            }).on('click', '.btn-danger', function (e) {
-                var self = $(this).text('请稍后..').attr('disabled', 'disabled');
-
-                var modalBody = $(this).parent().prev();
-                modalBody.find('.alert-danger').hide();
-
-                var accountId = modalBody.find('input[name="AccountId"]').val();
-                var walletId = modalBody.find('input[name="WalletId"]').val();
-                var ownerAddress = modalBody.find('input[name="OwnerAddress"]').val();
-                var password = modalBody.find('input[name="Password"]').val();
-                $.post('/Wallet/Authorize', { accountId: accountId, walletId: walletId, ownerAddress: ownerAddress, password: password }, function (result) {
-                    if (result.status === 2) {
-                        modalBody.append('<div class="alert alert-success" role="alert" style="margin-bottom:0 !important;"><a href="https://tronscan.io/#/transaction/' + result.transactionId + '" target="_blank">' + result.transactionId + '</a></div>');
-                        self.text('提交成功');
-
-                        setTimeout(function () {
-                            location.reload();
-                        }, 10000);
-                    } else {
-                        modalBody.append('<div class="alert alert-danger" role="alert" style="margin-bottom:0 !important;">' + result.message + '</div>');
-                        self.removeAttr('disabled').text('确定');
                     }
                 });
             });

@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace Tron.Wallet.Web.Controllers {
     using Newtonsoft.Json;
     using Tron.Wallet.Web.ViewModels;
-    using Tron.Wallet.Net;
-    using Tron.Wallet.Net.Accounts;
-    using Tron.Wallet.Net.Contracts;
+    using Tron.Wallet;
+    using Tron.Wallet.Accounts;
+    using Tron.Wallet.Contracts;
 
     public class WalletController : BaseController {
         #region List
@@ -199,7 +199,7 @@ namespace Tron.Wallet.Web.Controllers {
             var transactionSigned = transactionClient.GetTransactionSign(transactionExtension.Transaction, privateKey);
             var returnObj = await transactionClient.BroadcastTransactionAsync(transactionSigned);
 
-            return new { Result = returnObj.Result, Message = returnObj.Message, TransactionId = transactionId };
+            return new { Result = returnObj.Result, Message = returnObj.Message?.ToStringUtf8(), TransactionId = transactionId };
         }
 
         #endregion
@@ -215,7 +215,7 @@ namespace Tron.Wallet.Web.Controllers {
 
             var account = new TronAccount(privateKey, TronNetwork.MainNet);
 
-            const long feeAmount = 30 * 1000000L;
+            const long feeAmount = 60 * 1000000L;
 
 #pragma warning disable CS8602 // 解引用可能出现空引用。
             return await contractClient.TransferAsync(contractAddress, account, toAddress, amount, memo, feeAmount);
@@ -285,7 +285,7 @@ namespace Tron.Wallet.Web.Controllers {
             var transactionSigned = transactionClient.GetTransactionSign(transactionExtention.Transaction, privateKey);
             var returnObj = await transactionClient.BroadcastTransactionAsync(transactionSigned);
 
-            return new { Result = returnObj.Result, Message = returnObj.Message, TransactionId = transactionExtention.Transaction.GetTxid() };
+            return new { Result = returnObj.Result, Message = returnObj.Message?.ToStringUtf8(), TransactionId = transactionExtention.Transaction.GetTxid() };
         }
 
         #endregion
