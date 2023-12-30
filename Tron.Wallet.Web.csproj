@@ -7,10 +7,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Grpc.Core" Version="2.46.6" />
 		<PackageReference Include="HDWallet.Tron" Version="0.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Tron.Wallet" Version="1.2.0" />
+		<PackageReference Include="Tron.Wallet" Version="1.2.1" />
 	</ItemGroup>
 
 	<ProjectExtensions>
