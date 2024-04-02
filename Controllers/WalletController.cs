@@ -1,12 +1,12 @@
-﻿using System.Web;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Web;
 
 namespace Tron.Wallet.Web.Controllers {
     using Newtonsoft.Json;
+    using Tron;
+    using Tron.Accounts;
+    using Tron.Contracts;
     using Tron.Wallet.Web.ViewModels;
-    using Tron.Wallet;
-    using Tron.Wallet.Accounts;
-    using Tron.Wallet.Contracts;
 
     public class WalletController : BaseController {
         #region List

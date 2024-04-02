@@ -1,10 +1,9 @@
-﻿using System.Web;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Web;
 
 namespace Tron.Wallet.Web.Controllers {
     using HDWallet.Core;
     using HDWallet.Tron;
-    using Tron.Wallet;
     using ViewModels;
 
     public class HomeController : BaseController {
