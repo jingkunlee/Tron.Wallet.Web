@@ -3,12 +3,11 @@
 namespace Tron.Wallet.Web;
 
 using Microsoft.Extensions.DependencyInjection;
-using Tron.Wallet;
 
 public record TronRecord(IServiceProvider ServiceProvider, ITronClient? TronClient, IOptions<TronNetOptions>? Options);
 
 public static class TronServiceExtension {
-    private static IServiceProvider AddTronNet() {
+    private static IServiceProvider AddTron() {
         IServiceCollection services = new ServiceCollection();
         services.AddTronNet(x =>
         {
@@ -22,7 +21,7 @@ public static class TronServiceExtension {
     }
 
     public static TronRecord GetRecord() {
-        var provider = AddTronNet();
+        var provider = AddTron();
         var client = provider.GetService<ITronClient>();
         var options = provider.GetService<IOptions<TronNetOptions>>();
 
