@@ -3,9 +3,9 @@ using System.Web;
 
 namespace Tron.Wallet.Web.Controllers {
     using Newtonsoft.Json;
-    using Tron;
-    using Tron.Accounts;
-    using Tron.Contracts;
+    using TronNetSdk;
+    using TronNetSdk.Accounts;
+    using TronNetSdk.Contracts;
     using Tron.Wallet.Web.ViewModels;
 
     public class WalletController : BaseController {

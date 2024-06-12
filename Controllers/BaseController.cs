@@ -5,7 +5,7 @@ namespace Tron.Wallet.Web.Controllers {
     using HDWallet.Core;
     using HDWallet.Tron;
     using Newtonsoft.Json;
-    using Tron;
+    using TronNetSdk;
 
     public class BaseController : Controller {
 
