@@ -1,8 +1,9 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 
 namespace Tron.Wallet.Web;
 
 using Microsoft.Extensions.DependencyInjection;
+using TronNetSdk;
 
 public record TronRecord(IServiceProvider ServiceProvider, ITronClient? TronClient, IOptions<TronNetOptions>? Options);
 
