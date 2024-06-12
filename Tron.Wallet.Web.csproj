@@ -9,7 +9,7 @@
 	<ItemGroup>
 		<PackageReference Include="HDWallet.Tron" Version="0.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="TronWalletSdk" Version="1.0.0" />
+		<PackageReference Include="TronNetSdk" Version="1.0.0" />
 	</ItemGroup>
 
 	<ProjectExtensions>
