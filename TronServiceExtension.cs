@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 namespace Tron.Wallet.Web;
 
 using Microsoft.Extensions.DependencyInjection;
-using TronNetSdk;
+using Tron;
 
 public record TronRecord(IServiceProvider ServiceProvider, ITronClient? TronClient, IOptions<TronNetOptions>? Options);
 
