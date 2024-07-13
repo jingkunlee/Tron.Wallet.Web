@@ -5,7 +5,7 @@ namespace Tron.Wallet.Web.Controllers {
     using HDWallet.Core;
     using HDWallet.Tron;
     using ViewModels;
-    using TronNetSdk;
+    using Tron;
 
     public class HomeController : BaseController {
         [HttpGet]
